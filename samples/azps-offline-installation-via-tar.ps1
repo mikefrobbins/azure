@@ -10,7 +10,7 @@ $downloadPath = "$home/Downloads"
 
 # Verify download folder exists
 if (-not (Test-Path -Path $downloadPath -PathType Container)) {
-    New-Item -Path $downloadPath
+    New-Item -Path $downloadPath -ItemType Directory
 }
 
 # Determine the source tar file to download
