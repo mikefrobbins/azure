@@ -5,7 +5,7 @@
     Website:       https://mikefrobbins.com/
 #>
 
-# Define paths for source and destination locations (change as necessary)
+# Define path for destination location (change as necessary)
 $downloadPath = "$home/Downloads"
 
 # Verify download folder exists
