@@ -3,7 +3,6 @@
 <#
     Author:        Mike F. Robbins
     Website:       https://mikefrobbins.com/
-    Prerequisites: Az PowerShell module
 #>
 
 # Define paths for source and destination locations (change as necessary)
