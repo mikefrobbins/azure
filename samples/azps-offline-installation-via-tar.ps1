@@ -6,30 +6,33 @@
 #>
 
 # Define path for destination location (change as necessary)
-$downloadPath = "$home/Downloads"
+$downloadFolderPath = "$home/Downloads"
 
 # Verify download folder exists
-if (-not (Test-Path -Path $downloadPath -PathType Container)) {
-    New-Item -Path $downloadPath -ItemType Directory
+if (-not (Test-Path -Path $downloadFolderPath -PathType Container)) {
+    New-Item -Path $downloadFolderPath -ItemType Directory
 }
 
 # Determine the source tar file to download
-$tarFileLocation = (Invoke-RestMethod -Uri https://api.github.com/repos/azure/azure-powershell/releases/latest).assets.where({$_.content_type -eq 'application/x-gzip'}).browser_download_url
+$tarSourceUrl = (
+    Invoke-RestMethod -Uri https://api.github.com/repos/azure/azure-powershell/releases/latest |
+    Select-Object -ExpandProperty assets | Where-Object content_type -eq 'application/x-gzip'
+).browser_download_url
 
 # Store source and destination filenames in variables (do not change)
-$fileName = Split-Path -Path $tarFileLocation -Leaf
-$downloadFileLocation = Join-Path -Path $downloadPath -ChildPath $fileName
+$fileName = Split-Path -Path $tarSourceUrl -Leaf
+$downloadFilePath = Join-Path -Path $downloadFolderPath -ChildPath $fileName
 
 # Download the tar file from GitHub
-Invoke-WebRequest -Uri $tarFileLocation -OutFile $downloadFileLocation
+Invoke-WebRequest -Uri $tarSourceUrl -OutFile $downloadFilePath
 
 # Unblock the downloaded file on Windows
 if ($PSVersionTable.PSVersion.Major -le 5 -or $IsWindows -eq $true) {
-    Unblock-File -Path $downloadFileLocation
+    Unblock-File -Path $downloadFilePath
 }
 
 # Extract the tar archive
-tar zxf $downloadFileLocation -C $downloadPath
+tar zxf $downloadFilePath -C $downloadFolderPath
 
 # Install the Az module from the extracted files
-.$downloadPath/InstallModule.ps1
+.$downloadFolderPath/InstallModule.ps1
